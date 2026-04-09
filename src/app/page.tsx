@@ -1,6 +1,6 @@
 "use client";
 
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Panel, Group, Separator } from "react-resizable-panels";
 import { CodeEditor } from "@/components/Editor/CodeEditor";
 import { LivePreview } from "@/components/Preview/LivePreview";
 import { Header } from "@/components/Header/Header";
@@ -11,26 +11,26 @@ export default function Home() {
       <Header />
       
       <main className="flex-1 min-h-0">
-        <PanelGroup direction="horizontal">
+        <Group direction="horizontal">
           {/* Main Editor Area */}
           <Panel defaultSize={50} minSize={20}>
-            <PanelGroup direction="vertical">
+            <Group direction="vertical">
               <Panel defaultSize={100}>
                 <CodeEditor />
               </Panel>
-            </PanelGroup>
+            </Group>
           </Panel>
 
           {/* Resizer */}
-          <PanelResizeHandle className="w-2 bg-[#3c3c3c] hover:bg-blue-500 transition-colors flex flex-col justify-center items-center cursor-col-resize">
+          <Separator className="w-2 bg-[#3c3c3c] hover:bg-blue-500 transition-colors flex flex-col justify-center items-center cursor-col-resize">
             <div className="w-0.5 h-8 bg-gray-500 rounded-full" />
-          </PanelResizeHandle>
+          </Separator>
 
           {/* Preview Area */}
           <Panel defaultSize={50} minSize={20}>
              <LivePreview />
           </Panel>
-        </PanelGroup>
+        </Group>
       </main>
     </div>
   );
