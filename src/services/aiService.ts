@@ -1,6 +1,3 @@
-const OPENROUTER_API_KEY = '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';
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
 export interface AIMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -14,25 +11,20 @@ export interface AIResponse {
 export const aiService = {
   async chat(messages: AIMessage[]): Promise<AIResponse> {
     try {
-      const response = await fetch(OPENROUTER_API_URL, {
+      const response = await fetch('/api/ai', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'https://ss-dev.vercel.app',
-          'X-Title': 'SS Dev Code Editor'
         },
         body: JSON.stringify({
-          model: 'anthropic/claude-3.5-sonnet',
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 4000
+          messages,
+          model: 'anthropic/claude-3.5-sonnet'
         })
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error?.message || 'AI request failed');
+        throw new Error(errorData.error || 'AI request failed');
       }
 
       const data = await response.json();
