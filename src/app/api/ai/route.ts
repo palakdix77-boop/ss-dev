@@ -1,43 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const OPENROUTER_API_KEY = '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';
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// Note: Replace with your own Google AI API key from https://aistudio.google.com/app/apikey
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || 'YOUR_GOOGLE_API_KEY';
+const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, model = 'google/gemma-4-26b-a4b-it:free' } = body;
+    const { messages } = body;
 
-    const response = await fetch(OPENROUTER_API_URL, {
+    // Extract the last user message for Gemini
+    const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop();
+    const prompt = lastUserMessage?.content || '';
+
+    const response = await fetch(`${GOOGLE_API_URL}?key=${GOOGLE_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'HTTP-Referer': req.headers.get('origin') || 'https://ss-dev.vercel.app',
-        'X-Title': 'SS Dev Code Editor',
       },
       body: JSON.stringify({
-        model,
-        messages,
-        temperature: 0.7,
-        max_tokens: 4000,
-        stream: false,
+        contents: [{
+          parts: [{ text: prompt }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 4000,
+        },
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('OpenRouter Error:', data);
+      console.error('Google AI Error:', data);
       return NextResponse.json(
-        { error: data.error?.message || data.error || 'AI request failed' },
+        { error: data.error?.message || 'AI request failed' },
         { status: response.status }
       );
     }
 
-    return NextResponse.json(data);
+    // Transform Gemini response to OpenRouter format for compatibility
+    const transformedResponse = {
+      choices: [{
+        message: {
+          role: 'assistant',
+          content: data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response'
+        }
+      }]
+    };
+
+    return NextResponse.json(transformedResponse);
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(

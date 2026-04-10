@@ -9,8 +9,7 @@ export interface AIResponse {
 }
 
 export const aiService = {
-  async chat(messages: AIMessage[], model?: string): Promise<AIResponse> {
-    const selectedModel = model || 'meta-llama/llama-3.1-8b-instruct:free';
+  async chat(messages: AIMessage[], _model?: string): Promise<AIResponse> {
     try {
       const response = await fetch('/api/ai', {
         method: 'POST',
@@ -18,8 +17,7 @@ export const aiService = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages,
-          model: selectedModel
+          messages
         })
       });
 
@@ -54,8 +52,7 @@ export const aiService = {
     return this.chat(messages);
   },
 
-  async fixErrors(code: string, language: string, errorDescription?: string, model?: string): Promise<AIResponse> {
-    const selectedModel = model || 'meta-llama/llama-3.1-8b-instruct:free';
+  async fixErrors(code: string, language: string, errorDescription?: string, _model?: string): Promise<AIResponse> {
     const messages: AIMessage[] = [
       {
         role: 'system',
@@ -68,11 +65,10 @@ export const aiService = {
           : `Fix any errors in this ${language} code:\n\n\`\`\`${language}\n${code}\n\`\`\``
       }
     ];
-    return this.chat(messages, selectedModel);
+    return this.chat(messages);
   },
 
-  async generateCode(prompt: string, language: string, model?: string): Promise<AIResponse> {
-    const selectedModel = model || 'meta-llama/llama-3.1-8b-instruct:free';
+  async generateCode(prompt: string, language: string, _model?: string): Promise<AIResponse> {
     const messages: AIMessage[] = [
       {
         role: 'system',
@@ -83,11 +79,10 @@ export const aiService = {
         content: `Generate ${language} code for: ${prompt}`
       }
     ];
-    return this.chat(messages, selectedModel);
+    return this.chat(messages);
   },
 
-  async explainCode(code: string, language: string, model?: string): Promise<AIResponse> {
-    const selectedModel = model || 'meta-llama/llama-3.1-8b-instruct:free';
+  async explainCode(code: string, language: string, _model?: string): Promise<AIResponse> {
     const messages: AIMessage[] = [
       {
         role: 'system',
@@ -98,6 +93,6 @@ export const aiService = {
         content: `Explain this ${language} code:\n\n\`\`\`${language}\n${code}\n\`\`\``
       }
     ];
-    return this.chat(messages, selectedModel);
+    return this.chat(messages);
   }
 };

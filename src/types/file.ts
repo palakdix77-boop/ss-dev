@@ -30,13 +30,9 @@ export type FileLanguage =
   | 'xml'
   | 'plain';
 
-// AI Models available in OpenRouter
+// AI Model - Using Google Gemini (free tier)
 export const AI_MODELS = [
-  { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1', provider: 'Meta', free: true },
-  { id: 'microsoft/phi-3.5-mini-instruct:free', name: 'Phi 3.5', provider: 'Microsoft', free: true },
-  { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B', provider: 'Mistral', free: true },
-  { id: 'qwen/qwen-2.5-7b-instruct:free', name: 'Qwen 2.5', provider: 'Alibaba', free: true },
-  { id: 'deepseek/deepseek-coder:free', name: 'DeepSeek Coder', provider: 'DeepSeek', free: true },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', provider: 'Google', free: true },
 ];
 
 // Word Finder type
