@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Note: Replace with your own Google AI API key from https://aistudio.google.com/app/apikey
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || 'YOUR_GOOGLE_API_KEY';
-const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent';
 
 export const runtime = 'edge';
 

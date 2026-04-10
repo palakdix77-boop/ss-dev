@@ -32,7 +32,7 @@ export type FileLanguage =
 
 // AI Model - Using Google Gemini (free tier)
 export const AI_MODELS = [
-  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', provider: 'Google', free: true },
+  { id: 'gemini-1.5-flash-8b', name: 'Gemini 1.5 Flash 8B', provider: 'Google', free: true },
 ];
 
 // Word Finder type
