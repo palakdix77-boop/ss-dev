@@ -180,7 +180,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   aiMessages: [],
   isAILoading: false,
   selectedFileForAI: null,
-  selectedModel: 'google/gemma-4-26b-a4b-it:free',
+  selectedModel: 'meta-llama/llama-3.1-8b-instruct:free',
   wordFinderOpen: false,
   wordFinderQuery: '',
   projectHistory: [],

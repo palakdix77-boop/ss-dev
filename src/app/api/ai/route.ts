@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = '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';
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export const runtime = 'edge';

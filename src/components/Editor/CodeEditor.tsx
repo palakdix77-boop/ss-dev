@@ -12,7 +12,7 @@ interface TabContextMenuProps {
 }
 
 function TabContextMenu({ fileId, onClose }: TabContextMenuProps) {
-  const { getFileById, getFileContent, addAIMessage, setActiveSidebarTab, toggleAIPanel, setSelectedFileForAI } = useAppStore();
+  const { getFileById, getFileContent, addAIMessage, setActiveSidebarTab, toggleAIPanel, setSelectedFileForAI, selectedModel } = useAppStore();
   
   const handleAction = async (action: 'analyze' | 'fix' | 'explain') => {
     const file = getFileById(fileId);
@@ -33,10 +33,10 @@ function TabContextMenu({ fileId, onClose }: TabContextMenuProps) {
         response = await aiService.analyzeCode(content, language);
         break;
       case 'fix':
-        response = await aiService.fixErrors(content, language);
+        response = await aiService.fixErrors(content, language, undefined, selectedModel);
         break;
       case 'explain':
-        response = await aiService.explainCode(content, language);
+        response = await aiService.explainCode(content, language, selectedModel);
         break;
     }
 

@@ -14,7 +14,8 @@ export function AIAssistant() {
     setIsAILoading,
     clearAIMessages,
     getFileById,
-    getFileContent
+    getFileContent,
+    selectedModel
   } = useAppStore();
   
   const [input, setInput] = useState('');
@@ -44,10 +45,10 @@ export function AIAssistant() {
 
     switch (activeMode) {
       case 'generate':
-        response = await aiService.generateCode(userMessage, fileLanguage);
+        response = await aiService.generateCode(userMessage, fileLanguage, selectedModel);
         break;
       case 'fix':
-        response = await aiService.fixErrors(fileContent, fileLanguage, userMessage);
+        response = await aiService.fixErrors(fileContent, fileLanguage, userMessage, selectedModel);
         break;
       default:
         if (selectedFile) {
@@ -58,12 +59,12 @@ export function AIAssistant() {
             },
             ...aiMessages,
             { role: 'user', content: userMessage }
-          ]);
+          ], selectedModel);
         } else {
           response = await aiService.chat([
             ...aiMessages,
             { role: 'user', content: userMessage }
-          ]);
+          ], selectedModel);
         }
     }
 

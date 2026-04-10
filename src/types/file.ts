@@ -32,11 +32,11 @@ export type FileLanguage =
 
 // AI Models available in OpenRouter
 export const AI_MODELS = [
-  { id: 'google/gemma-4-26b-a4b-it:free', name: 'Gemma 4', provider: 'Google', free: true },
-  { id: 'alibaba/wan-2.6', name: 'Wan 2.6', provider: 'Alibaba', free: true },
-  { id: 'minimax/minimax-m2.5:free', name: 'MiniMax M2.5', provider: 'MiniMax', free: true },
-  { id: 'liquid/lfm-2.5-1.2b-instruct:free', name: 'LFM 2.5', provider: 'Liquid', free: true },
-  { id: 'arcee-ai/trinity-mini:free', name: 'Trinity Mini', provider: 'Arcee AI', free: true },
+  { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1', provider: 'Meta', free: true },
+  { id: 'microsoft/phi-3.5-mini-instruct:free', name: 'Phi 3.5', provider: 'Microsoft', free: true },
+  { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B', provider: 'Mistral', free: true },
+  { id: 'qwen/qwen-2.5-7b-instruct:free', name: 'Qwen 2.5', provider: 'Alibaba', free: true },
+  { id: 'deepseek/deepseek-coder:free', name: 'DeepSeek Coder', provider: 'DeepSeek', free: true },
 ];
 
 // Word Finder type
