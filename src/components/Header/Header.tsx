@@ -14,7 +14,10 @@ import {
   ChevronDown,
   Image as ImageIcon,
   FileText,
-  Code2
+  Code2,
+  Plus,
+  History,
+  Search
 } from 'lucide-react';
 import JSZip from 'jszip';
 
@@ -25,7 +28,12 @@ export function Header() {
     activeSidebarTab, 
     setActiveSidebarTab,
     exportProject,
-    importFiles
+    importFiles,
+    createProject,
+    addToHistory,
+    setWordFinderOpen,
+    setActiveSidebarTab: setActiveTab,
+    projectHistory
   } = useAppStore();
   
   const [showMenu, setShowMenu] = useState(false);
@@ -96,7 +104,16 @@ export function Header() {
     { id: 'files', icon: Folder, label: 'Files' },
     { id: 'ai', icon: Bot, label: 'AI Assistant' },
     { id: 'android', icon: Smartphone, label: 'Android Export' },
+    { id: 'history', icon: History, label: 'History' },
   ] as const;
+
+  const handleNewProject = () => {
+    const name = prompt('Enter project name:');
+    if (name) {
+      addToHistory();
+      createProject(name);
+    }
+  };
 
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-[#1e1e1e] border-b border-[#3c3c3c]">
@@ -179,6 +196,26 @@ export function Header() {
         >
           <Download size={16} />
           <span className="hidden sm:inline">Export</span>
+        </button>
+
+        {/* Word Finder Button */}
+        <button
+          onClick={() => setWordFinderOpen(true)}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-300 hover:bg-[#3c3c3c] rounded-lg transition-colors"
+          title="Word Finder"
+        >
+          <Search size={16} />
+          <span className="hidden sm:inline">Find</span>
+        </button>
+
+        {/* New Project Button */}
+        <button
+          onClick={handleNewProject}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          title="New Project"
+        >
+          <Plus size={16} />
+          <span className="hidden sm:inline">New</span>
         </button>
 
         {/* Save Button */}

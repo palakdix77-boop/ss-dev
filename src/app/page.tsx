@@ -8,9 +8,44 @@ import { Header } from "@/components/Header/Header";
 import { FileExplorer } from "@/components/FileExplorer/FileExplorer";
 import { AIAssistant } from "@/components/AIAssistant/AIAssistant";
 import { AndroidExport } from "@/components/AndroidExport/AndroidExport";
+import { WordFinder } from "@/components/WordFinder/WordFinder";
+import { History } from "lucide-react";
+import { useState } from "react";
+
+function ProjectHistory() {
+  const { projectHistory, loadFromHistory } = useAppStore();
+  
+  if (projectHistory.length === 0) {
+    return (
+      <div className="p-4 text-gray-400 text-center">
+        No project history yet.
+      </div>
+    );
+  }
+  
+  return (
+    <div className="p-4">
+      <h3 className="text-white font-semibold mb-4">Project History</h3>
+      <div className="space-y-2">
+        {projectHistory.map((project) => (
+          <div
+            key={project.id}
+            className="p-3 bg-[#2d2d2d] rounded-lg hover:bg-[#3d3d3d] cursor-pointer transition-colors"
+            onClick={() => loadFromHistory(project.id)}
+          >
+            <p className="text-white font-medium">{project.name}</p>
+            <p className="text-gray-400 text-sm">
+              Last opened: {new Date(project.lastOpened).toLocaleDateString()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  const { sidebarVisible, activeSidebarTab } = useAppStore();
+  const { sidebarVisible, activeSidebarTab, wordFinderOpen } = useAppStore();
 
   const renderSidebar = () => {
     switch (activeSidebarTab) {
@@ -20,6 +55,8 @@ export default function Home() {
         return <AIAssistant />;
       case 'android':
         return <AndroidExport />;
+      case 'history':
+        return <ProjectHistory />;
       default:
         return <FileExplorer />;
     }
@@ -28,6 +65,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#1e1e1e] text-white">
       <Header />
+      <WordFinder />
       
       <main className="flex-1 min-h-0">
         <PanelGroup direction="horizontal">

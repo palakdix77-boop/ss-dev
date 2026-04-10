@@ -30,6 +30,22 @@ export type FileLanguage =
   | 'xml'
   | 'plain';
 
+// AI Models available in OpenRouter
+export const AI_MODELS = [
+  { id: 'google/gemma-4-26b-a4b-it:free', name: 'Gemma 4', provider: 'Google', free: true },
+  { id: 'alibaba/wan-2.6', name: 'Wan 2.6', provider: 'Alibaba', free: true },
+  { id: 'minimax/minimax-m2.5:free', name: 'MiniMax M2.5', provider: 'MiniMax', free: true },
+  { id: 'liquid/lfm-2.5-1.2b-instruct:free', name: 'LFM 2.5', provider: 'Liquid', free: true },
+  { id: 'arcee-ai/trinity-mini:free', name: 'Trinity Mini', provider: 'Arcee AI', free: true },
+];
+
+// Word Finder type
+export interface WordFinderResult {
+  fileId: string;
+  fileName: string;
+  matches: { line: number; content: string }[];
+}
+
 export const getLanguageFromExtension = (filename: string): FileLanguage => {
   const ext = filename.split('.').pop()?.toLowerCase();
   switch (ext) {

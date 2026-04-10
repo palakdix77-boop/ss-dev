@@ -20,16 +20,34 @@ interface AppState {
   // UI State
   sidebarVisible: boolean;
   aiPanelVisible: boolean;
-  activeSidebarTab: 'files' | 'ai' | 'android' | 'settings';
+  activeSidebarTab: 'files' | 'ai' | 'android' | 'settings' | 'history';
   
   // AI State
   aiMessages: AIMessage[];
   isAILoading: boolean;
   selectedFileForAI: string | null;
+  selectedModel: string;
+  
+  // Word Finder
+  wordFinderOpen: boolean;
+  wordFinderQuery: string;
+  
+  // Project History
+  projectHistory: { id: string; name: string; lastOpened: Date; files: FileNode[] }[];
+  
+  // Code Generation
+  isGeneratingCode: boolean;
   
   // Actions
   createProject: (name: string) => void;
   setCurrentProject: (id: string) => void;
+  setSelectedModel: (model: string) => void;
+  setWordFinderOpen: (open: boolean) => void;
+  setWordFinderQuery: (query: string) => void;
+  addToHistory: () => void;
+  loadFromHistory: (id: string) => void;
+  setIsGeneratingCode: (generating: boolean) => void;
+  generateCode: (prompt: string, language: string) => Promise<string>;
   
   createFile: (name: string, parentId?: string | null, content?: string) => void;
   createFolder: (name: string, parentId?: string | null) => void;
@@ -44,7 +62,7 @@ interface AppState {
   
   toggleSidebar: () => void;
   toggleAIPanel: () => void;
-  setActiveSidebarTab: (tab: 'files' | 'ai' | 'android' | 'settings') => void;
+  setActiveSidebarTab: (tab: 'files' | 'ai' | 'android' | 'settings' | 'history') => void;
   
   addAIMessage: (message: AIMessage) => void;
   clearAIMessages: () => void;
@@ -162,6 +180,79 @@ export const useAppStore = create<AppState>((set, get) => ({
   aiMessages: [],
   isAILoading: false,
   selectedFileForAI: null,
+  selectedModel: 'google/gemma-4-26b-a4b-it:free',
+  wordFinderOpen: false,
+  wordFinderQuery: '',
+  projectHistory: [],
+  isGeneratingCode: false,
+
+  // New functions
+  setSelectedModel: (model) => set({ selectedModel: model }),
+  setWordFinderOpen: (open) => set({ wordFinderOpen: open }),
+  setWordFinderQuery: (query) => set({ wordFinderQuery: query }),
+  
+  addToHistory: () => {
+    const state = get();
+    const currentProject = state.projects.find(p => p.id === state.currentProjectId);
+    if (currentProject) {
+      const historyItem = {
+        id: currentProject.id,
+        name: currentProject.name,
+        lastOpened: new Date(),
+        files: JSON.parse(JSON.stringify(currentProject.files))
+      };
+      set((state) => ({
+        projectHistory: [historyItem, ...state.projectHistory.filter(h => h.id !== historyItem.id)].slice(0, 20)
+      }));
+    }
+  },
+  
+  loadFromHistory: (id) => {
+    const historyItem = get().projectHistory.find(h => h.id === id);
+    if (historyItem) {
+      const project = get().projects.find(p => p.id === id);
+      if (project) {
+        set({
+          currentProjectId: id,
+          files: historyItem.files,
+          activeFileId: null,
+          openTabs: []
+        });
+      }
+    }
+  },
+  
+  setIsGeneratingCode: (generating) => set({ isGeneratingCode: generating }),
+  
+  generateCode: async (prompt, language) => {
+    set({ isGeneratingCode: true });
+    try {
+      const state = get();
+      const activeFile = state.files.find(f => f.id === state.activeFileId);
+      const currentContent = activeFile?.content || '';
+      
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{
+            role: 'user',
+            content: `Generate ${language} code for: ${prompt}\n\nCurrent code:\n${currentContent}\n\nRespond with only the code, no explanations.`
+          }],
+          model: state.selectedModel,
+          stream: false
+        })
+      });
+      
+      const data = await response.json();
+      set({ isGeneratingCode: false });
+      return data.choices?.[0]?.message?.content || '';
+    } catch (error) {
+      set({ isGeneratingCode: false });
+      console.error('Code generation error:', error);
+      return '';
+    }
+  },
 
   // Project Actions
   createProject: (name) => {
